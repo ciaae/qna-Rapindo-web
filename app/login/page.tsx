@@ -47,55 +47,58 @@ export default function LoginPage() {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-background p-4">
-            <Card className="w-full max-w-md">
-                <CardHeader>
-                    <CardTitle>Admin Login</CardTitle>
-                    <CardDescription>
-                        Sign in to manage QnA content
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleLogin} className="space-y-4">
-                        <div className="space-y-2">
-                            <label htmlFor="email" className="text-sm font-medium">
-                                Email
-                            </label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="admin@example.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
+        <div className="min-h-screen flex flex-col bg-background p-4">
+            <Button variant="outline" onClick={() => router.back()} className="self-start cursor-pointer">Back</Button>
+            <div className="flex-1 flex justify-center items-center">
+                <Card className="w-full max-w-md">
+                    <CardHeader>
+                        <CardTitle>Admin Login</CardTitle>
+                        <CardDescription>
+                            Sign in to manage QnA content
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleLogin} className="space-y-4">
+                            <div className="space-y-2">
+                                <label htmlFor="email" className="text-sm font-medium">
+                                    Email
+                                </label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    placeholder="admin@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
 
-                        <div className="space-y-2">
-                            <label htmlFor="password" className="text-sm font-medium">
-                                Password
-                            </label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
+                            <div className="space-y-2">
+                                <label htmlFor="password" className="text-sm font-medium">
+                                    Password
+                                </label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
 
 
-                        {error && <div className="text-red-500 text-sm">{error}</div>}
+                            {error && <div className="text-red-500 text-sm">{error}</div>}
 
-                        <Button type="submit" className="w-full" disabled={loading}>
-                            {loading
-                                ? 'Signing in...'
-                                : 'Sign In'}
-                        </Button>
-                    </form>
-                </CardContent>
-            </Card>
+                            <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 cursor-pointer" disabled={loading}>
+                                {loading
+                                    ? 'Signing in...'
+                                    : 'Sign In'}
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     )
 }
