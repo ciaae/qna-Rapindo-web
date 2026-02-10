@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,32 +18,6 @@ interface QnAItem {
   tags: string[]
 }
 
-const QNA_DATA: QnAItem[] = [
-  {
-    id: 1,
-    question: 'Kenapa checking Rapindo diletakkan di akhir, Sebelum Pencairan?',
-    answer: 'Karena setiap kali dilakukan pengecekan (hit/checking) pada asset registry akan timbul biaya. Apabila pengecekan tersebut dilakukan di awal, namun kredit pada akhirnya tidak jadi dicairkan, maka biaya yang timbul tersebut akan dibebankan kepada siapa? Oleh karena itu, pengecekan Rapindo diletakkan di akhir, sebelum pencairan, sehingga biaya yang timbul hanya akan dikenakan pada kredit yang benar-benar dicairkan.',
-    category: 'Checking & Pencairan',
-    tags: ['pencairan', 'checking'],
-  },
-  {
-    id: 2,
-    question: 'Apa yang harus dilakukan jika terdapat pop up notifikasi bloker?',
-    answer: '1. Baca instruksi\n2. Membuat tiket Ariana Khusus Rapindo\n3. Mengirimkan pesan WA ke Admin Rapindo dengan format: nomor rangka dan no Ariana',
-    category: 'notifikasi bloker',
-    tags: ['notifikasi', 'bloker', 'pop up'],
-  },
-  {
-    id: 3,
-    question: 'Apakah ada arti code yang ditampilkan pada Pop Up Bloker?',
-    answer: 'Iya setiap kode error memiliki artian, contohnya: \n1. Err-01 berarti xxx \n2. Err-02 berarti xxx \n3. Err-03 berarti ada kesalahan penginputan terkait asset registry Kendaraan (terutama similarity dari nomor rangka dengan no polisi) \n4. Err-04 berarti',
-    category: 'error code',
-    tags: ['error', 'pop up', 'code'],
-  },
-]
-
-const CATEGORIES = Array.from(new Set(QNA_DATA.map(item => item.category)))
-const ALL_TAGS = Array.from(new Set(QNA_DATA.flatMap(item => item.tags)))
 
 export default function Home() {
   const searchParams = useSearchParams()
@@ -51,17 +25,49 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [expandedId, setExpandedId] = useState<number | null>(null)
+  const [qnaData, setQnaData] = useState<QnAItem[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const filteredQnA = QNA_DATA.filter(item => {
+  useEffect(() => {
+    const fetchQnA = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/qna`,
+          { cache: 'no-store' }
+        )
+
+        if (!res.ok) throw new Error('Failed to fetch QnA')
+
+        const data = await res.json()
+        setQnaData(data)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchQnA()
+  }, [])
+
+
+
+  const filteredQnA = qnaData.filter(item => {
     const matchesSearch =
       item.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.answer.toLowerCase().includes(searchTerm.toLowerCase())
 
     const matchesCategory = !selectedCategory || item.category === selectedCategory
-    const matchesTags = selectedTags.length === 0 || selectedTags.some(tag => item.tags.includes(tag))
+    const matchesTags =
+      selectedTags.length === 0 ||
+      selectedTags.some(tag => item.tags.includes(tag))
 
     return matchesSearch && matchesCategory && matchesTags
   })
+
+  const CATEGORIES = Array.from(new Set(qnaData.map(item => item.category)))
+  const ALL_TAGS = Array.from(new Set(qnaData.flatMap(item => item.tags)))
+
 
   const toggleTag = (tag: string) => {
     setSelectedTags(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]))
@@ -114,11 +120,10 @@ export default function Home() {
                       <button
                         key={tag}
                         onClick={() => toggleTag(tag)}
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-sm transition-colors ${
-                          selectedTags.includes(tag)
-                            ? 'bg-accent text-accent-foreground'
-                            : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                        }`}
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-sm transition-colors ${selectedTags.includes(tag)
+                          ? 'bg-accent text-accent-foreground'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                          }`}
                       >
                         {tag}
                       </button>
