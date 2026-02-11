@@ -25,16 +25,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+import { AccountsSection } from '@/components/accounts-section'
 
 interface QnAItem {
     id: number
@@ -66,7 +57,7 @@ interface User {
 }
 
 export default function Dashboard() {
-    const [activeTab, setActiveTab] = useState<'qna' | 'notes'>('qna')
+    const [activeTab, setActiveTab] = useState<'qna' | 'notes' | 'accounts'>('qna')
     const [qnaData, setQnaData] = useState<QnAItem[]>([])
     const [notes, setNotes] = useState<Note[]>([])
     const [showForm, setShowForm] = useState(false)
@@ -345,14 +336,17 @@ export default function Dashboard() {
 
     if (!isLoggedIn) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center p-4">
                 <div className="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full text-center">
                     <h1 className="text-3xl font-bold text-slate-900 mb-4">Logout Berhasil</h1>
                     <p className="text-slate-600 mb-6">
                         Terima kasih telah menggunakan Dashboard Q&A. Sampai jumpa lagi!
                     </p>
                     <div className="flex gap-4 justify-center">
-                        <Button  onClick={() => setIsLoggedIn(true)} className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90 cursor-pointer">Login</Button>
+                        <Link href="/login" className='flex-1'>
+                            <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90 cursor-pointer">Login</Button>
+                        </Link>
+                        {/* <Button onClick={() => setIsLoggedIn(true)} className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90 cursor-pointer">Login</Button> */}
                         <Link href="/" className='flex-1'>
                             <Button variant="outline" className='w-full cursor-pointer'>Dashboard</Button>
                         </Link>
@@ -361,6 +355,15 @@ export default function Dashboard() {
             </div>
         )
     }
+
+    if ((activeTab === 'accounts' || activeTab === 'notes') && user?.role !== 'ADMIN') {
+        return (
+            <div className="text-center text-red-600 font-semibold">
+                Unauthorized
+            </div>
+        )
+    }
+
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -398,15 +401,17 @@ export default function Dashboard() {
                         </div>
 
                         {/* Stats */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+                        <div className={`grid gap-4 ${user?.role === 'ADMIN' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
+                            <div className={`bg-linear-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200 ${user?.role === 'ADMIN' ? 'text-left' : 'text-center'}`}>
                                 <p className="text-blue-600 text-sm font-semibold">Total Q&A</p>
                                 <p className="text-3xl font-bold text-blue-900 mt-1">{pagination.total}</p>
                             </div>
-                            <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-4 border border-amber-200">
-                                <p className="text-amber-600 text-sm font-semibold">Catatan</p>
-                                <p className="text-3xl font-bold text-amber-900 mt-1">{notes.length}</p>
-                            </div>
+                            {user?.role === 'ADMIN' && (
+                                <div className="bg-linear-to-br from-amber-50 to-amber-100 rounded-lg p-4 border border-amber-200">
+                                    <p className="text-amber-600 text-sm font-semibold">Catatan</p>
+                                    <p className="text-3xl font-bold text-amber-900 mt-1">{notes.length}</p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Q&A Cards */}
@@ -441,7 +446,7 @@ export default function Dashboard() {
                                     <div className="flex items-center gap-2">
                                         <span className="text-sm text-muted-foreground">Show</span>
                                         <Select value={itemsPerPage.toString()} onValueChange={handleLimitChange}>
-                                            <SelectTrigger className="w-[70px]">
+                                            <SelectTrigger className="w-17.5">
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -470,6 +475,7 @@ export default function Dashboard() {
                                             onEdit={handleEditQnA}
                                             onDelete={handleDeleteClick}
                                             showActions={true}
+                                            isAdmin={user?.role === 'ADMIN'}
                                         />
                                     ))}
                                 </div>
@@ -511,7 +517,9 @@ export default function Dashboard() {
                             </div>
                         )}
                     </div>
-                ) : (
+                ) : activeTab === 'accounts' && user?.role === 'ADMIN' ? (
+                    <AccountsSection />
+                ) : activeTab === 'notes' && user?.role === 'ADMIN' && (
                     // Notes Section
                     <NotesSection
                         notes={notes}

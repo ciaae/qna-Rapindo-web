@@ -145,7 +145,7 @@ export function NotesSection({ notes, onAddNote, onDeleteNote }: NotesSectionPro
                 <h3 className="text-lg font-semibold text-slate-900 flex-1">{note.title}</h3>
                 <button
                   onClick={() => handleDeleteClick(note)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all flex-shrink-0"
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all shrink-0"
                 >
                   <Trash2 size={20} />
                 </button>

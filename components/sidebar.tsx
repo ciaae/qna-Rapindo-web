@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LogOut, FileText, HelpCircle, ChevronDown } from 'lucide-react'
+import { LogOut, FileText, HelpCircle, ChevronDown, Users } from 'lucide-react'
 
 interface User {
   name: string
@@ -8,8 +8,8 @@ interface User {
 }
 
 interface HeaderProps {
-  activeTab: 'qna' | 'notes'
-  onTabChange: (tab: 'qna' | 'notes') => void
+  activeTab: 'qna' | 'notes' | 'accounts'
+  onTabChange: (tab: 'qna' | 'notes' | 'accounts') => void
   onLogout: () => void
   user: User | null
 }
@@ -47,16 +47,32 @@ export function Sidebar({ activeTab, onTabChange, onLogout, user }: HeaderProps)
               Q&A
             </button>
 
-            <button
-              onClick={() => onTabChange('notes')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'notes'
-                ? 'text-blue-600 bg-blue-50'
-                : 'text-slate-600 hover:text-slate-900'
-                }`}
-            >
-              <FileText size={18} />
-              Catatan
-            </button>
+            {user?.role === 'ADMIN' && (
+              <>
+                <button
+                  onClick={() => onTabChange('notes')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'notes'
+                    ? 'text-blue-600 bg-blue-50'
+                    : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                >
+                  <FileText size={18} />
+                  Catatan
+                </button>
+                <button
+                  onClick={() => onTabChange('accounts')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'accounts'
+                    ? 'text-blue-600 bg-blue-50'
+                    : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                >
+                  <Users size={18} />
+                  Accounts
+                </button>
+              </>
+
+            )}
+
           </nav>
 
           {/* Profile Dropdown */}
@@ -65,7 +81,7 @@ export function Sidebar({ activeTab, onTabChange, onLogout, user }: HeaderProps)
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-slate-100 transition-all"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+              <div className="w-8 h-8 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                 {initial}
               </div>
 

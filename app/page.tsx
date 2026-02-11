@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CategoryFilter } from '@/components/category-filter'
@@ -149,9 +149,9 @@ export default function Home() {
 
   return (
     <Suspense fallback={<Loading />}>
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <div className="min-h-screen bg-linear-to-b from-background to-muted/20">
         {/* Header */}
-        <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
           <div className="flex justify-between items-center mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <div className='space-y-2'>
               <h1 className="text-4xl font-bold tracking-tight">QNA ASSET REGISTRY RAPINDO</h1>
@@ -233,7 +233,7 @@ export default function Home() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">Show</span>
                   <Select value={itemsPerPage.toString()} onValueChange={handleLimitChange}>
-                    <SelectTrigger className="w-[70px]">
+                    <SelectTrigger className="w-17.5">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

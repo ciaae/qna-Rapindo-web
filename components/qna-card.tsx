@@ -16,6 +16,7 @@ interface QnACardProps {
   onEdit?: (item: QnAItem) => void
   onDelete?: (id: number) => void
   showActions?: boolean
+  isAdmin?: boolean
 }
 
 export function QnACard({
@@ -24,7 +25,8 @@ export function QnACard({
   onToggle,
   onEdit,
   onDelete,
-  showActions = false
+  showActions = false,
+  isAdmin = false
 }: QnACardProps) {
 
   const handleEdit = (e: React.MouseEvent) => {
@@ -53,7 +55,7 @@ export function QnACard({
             <h3 className="font-semibold text-foreground">{item.question}</h3>
           </div>
           <ChevronDown
-            className={`h-5 w-5 flex-shrink-0 text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
+            className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
               }`}
           />
         </div>
@@ -88,15 +90,17 @@ export function QnACard({
             <Edit className="h-4 w-4" />
             Edit
           </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={handleDelete}
-            className="gap-2"
-          >
-            <Trash2 className="h-4 w-4" />
-            Delete
-          </Button>
+          {isAdmin && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleDelete}
+              className="gap-2"
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete
+            </Button>
+          )}
         </div>
       )}
     </div>

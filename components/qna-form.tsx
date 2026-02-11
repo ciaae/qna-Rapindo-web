@@ -1,5 +1,5 @@
 import React from "react"
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { X, Plus, Loader2 } from 'lucide-react'
 
 interface QnAFormProps {
