@@ -37,6 +37,13 @@ export default function LoginPage() {
                 throw new Error('Login failed')
             }
 
+            const data = await res.json()
+
+            // Simpan token manually (fallback)
+            if (data.token) {
+                document.cookie = `access_token=${data.token}; path=/; max-age=86400; SameSite=Lax`
+            }
+
             router.push('/admin/dashboard')
         } catch {
             setError('Login failed. Please check your credentials and try again.')
